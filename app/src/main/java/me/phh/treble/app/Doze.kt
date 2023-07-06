@@ -228,11 +228,11 @@ object Doze: EntryStartup {
 
     val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
         when(key) {
-            DozeSettings.handwaveKey, DozeSettings.pocketKey, DozeSettings.chopchopkey -> {
+            DozeSettings.HANDWAVE_KEY, DozeSettings.POCKET_KEY, DozeSettings.CHOPCHOP_KEY -> {
                 updateState(
-                        sp.getBoolean(DozeSettings.handwaveKey, false),
-                        sp.getBoolean(DozeSettings.pocketKey, false),
-                        sp.getBoolean(DozeSettings.chopchopkey, false)
+                        sp.getBoolean(DozeSettings.HANDWAVE_KEY, false),
+                        sp.getBoolean(DozeSettings.POCKET_KEY, false),
+                        sp.getBoolean(DozeSettings.CHOPCHOP_KEY, false)
                 )
             }
         }
@@ -259,9 +259,9 @@ object Doze: EntryStartup {
         sp.registerOnSharedPreferenceChangeListener(spListener)
 
         //Refresh parameters on boot
-        spListener.onSharedPreferenceChanged(sp, DozeSettings.handwaveKey)
-        spListener.onSharedPreferenceChanged(sp, DozeSettings.pocketKey)
-        spListener.onSharedPreferenceChanged(sp, DozeSettings.chopchopkey)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.HANDWAVE_KEY)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.POCKET_KEY)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.CHOPCHOP_KEY)
         accelerometer = AccelerometerListener()
     }
 

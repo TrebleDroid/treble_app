@@ -17,7 +17,10 @@
             android:key="key_doze_chopchop"
             android:title="Enable ChopChop gesture" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="ChopChop Settings">
+    <PreferenceCategory
+        android:title="ChopChop Settings"
+        android:key="key_doze_chopchop_category"
+        >
         <SwitchPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +37,7 @@
         <SeekBarPreference
             android:defaultValue="10"
             android:max="20"
-            android:title="Torch turnoff Timout"
+            android:title="Torch turnoff Timeout"
             app:min="1"
             app:seekBarIncrement="1"
             app:summary="Value in minutes"
