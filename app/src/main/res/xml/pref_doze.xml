@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:defaultValue="true"
             android:title="Automatically turnoff Torch"
-            android:summary="Automaticly Turn off the Flashlight after it was enabled through ChopChop"/>
+            android:summary="Automaticly Turn off the Flashlight after it was enabled through ChopChop"
+            android:key="key_doze_chopchop_autoturnoff"/>
         <SeekBarPreference
             android:defaultValue="10"
             android:max="20"
@@ -34,12 +35,14 @@
             app:min="1"
             app:seekBarIncrement="1"
             app:summary="Value in minutes"
-            app:showSeekBarValue="true"/>
+            app:showSeekBarValue="true"
+            android:key="key_doze_chopchop_autoturnoff_timout"/>
         <SwitchPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="true"
             android:title="Ignore &quot;Do not Disturb&quot;"
-            android:summary="When enabled ChopChop will also Vibrate during &quot;Do not Disturb&quot;" />
+            android:summary="When enabled ChopChop will also Vibrate during &quot;Do not Disturb&quot;"
+            android:key="key_doze_chopchop_autoturnoff_ignorednd"/>
     </PreferenceCategory>
 </PreferenceScreen>

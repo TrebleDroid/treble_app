@@ -12,6 +12,9 @@ object DozeSettings : Settings {
     const val POCKET_KEY = "key_doze_pocket"
     const val CHOPCHOP_KEY = "key_doze_chopchop"
     const val CHOPCHOP_CATEGORY_KEY = "key_doze_chopchop_category"
+    const val CHOPCHOP_AUTO_TURNOFF_KEY = "key_doze_chopchop_autoturnoff"
+    const val CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY = "key_doze_chopchop_autoturnoff_timout"
+    const val CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY = "key_doze_chopchop_autoturnoff_ignorednd"
 
     override fun enabled(): Boolean {
         //TODO: Check if sensors are available and respond to interrupts
