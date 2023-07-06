@@ -199,7 +199,12 @@ object Doze: EntryStartup {
     val torchStateListener = object : TorchCallback() {
         override fun onTorchModeChanged(cameraId: String, enabled: Boolean) {
             super.onTorchModeChanged(cameraId, enabled)
-            flashLightStatus = if(cameraId == torchCameraId) enabled else flashLightStatus
+
+            if(cameraId != torchCameraId) return
+
+            flashLightStatus = enabled
+            flashLightChangedSinceWait = System.currentTimeMillis()
+
         }
     }
 
