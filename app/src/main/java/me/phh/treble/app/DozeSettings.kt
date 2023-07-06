@@ -3,9 +3,10 @@ package me.phh.treble.app
 import android.hardware.Sensor
 import android.os.Bundle
 import android.preference.PreferenceManager
+import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
+import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
-import me.phh.treble.app.DozeSettings.CHOPCHOP_KEY
 
 object DozeSettings : Settings {
     const val HANDWAVE_KEY = "key_doze_handwave"
@@ -29,17 +30,48 @@ class DozeSettingsFragment : SettingsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         val chopchopCategoryPref = findPreference<PreferenceCategory>(DozeSettings.CHOPCHOP_CATEGORY_KEY)
+        val chopchopPref = findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_KEY)
         try {
             Doze.sensorManager.getSensorList(Sensor.TYPE_ALL).first { it.stringType == "com.motorola.sensor.chopchop" }
-
         } catch (e: Exception){
-
             chopchopCategoryPref!!.isVisible = false
-            findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_KEY)!!.isChecked = false
+            chopchopPref!!.isChecked = false
             val sp = PreferenceManager.getDefaultSharedPreferences(activity)
             val editor = sp.edit()
-            editor.putBoolean(CHOPCHOP_KEY, false)
+            editor.putBoolean(DozeSettings.CHOPCHOP_KEY, false)
             editor.apply()
         }
+        chopchopPref!!.onPreferenceChangeListener = chopchopEnabledChangeListener
+        findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_KEY)!!.onPreferenceChangeListener = chopchopAutoturnoffChangeListener
+        chopchopPref.callChangeListener(chopchopPref.isChecked)
     }
+
+    private val chopchopEnabledChangeListener = Preference.OnPreferenceChangeListener { _, enabled ->
+        val chopchopAutoTurnoffPref = findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_KEY)
+        val chopchopTimoutPref = findPreference<SeekBarPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY)
+        val chopchopDNDPref = findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY)
+
+        val autoturnoffEnabled = chopchopAutoTurnoffPref!!.isChecked
+
+        chopchopAutoTurnoffPref.isEnabled = enabled as Boolean
+
+        chopchopTimoutPref!!.isEnabled = enabled && autoturnoffEnabled
+        chopchopDNDPref!!.isEnabled = enabled && autoturnoffEnabled
+
+        true
+    }
+
+    private val chopchopAutoturnoffChangeListener = Preference.OnPreferenceChangeListener { _, enabled ->
+        val chopchopPref = findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_KEY)
+        val chopchopTimoutPref = findPreference<SeekBarPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY)
+        val chopchopDNDPref = findPreference<SwitchPreference>(DozeSettings.CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY)
+
+        val chopchopEnabled = chopchopPref!!.isChecked
+
+        chopchopTimoutPref!!.isEnabled = enabled as Boolean && chopchopEnabled
+        chopchopDNDPref!!.isEnabled = enabled && chopchopEnabled
+
+        true
+    }
+
 }
