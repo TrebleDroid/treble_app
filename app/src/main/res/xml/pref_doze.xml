@@ -25,13 +25,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="true"
-            android:title="Ignore &quot;Do not Disturb&quot;"
-            android:summary="When enabled ChopChop will also Vibrate during &quot;Do not Disturb&quot;"
-            />
-        <SwitchPreference
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:defaultValue="true"
             android:title="Automatically turnoff Torch"
             android:summary="Automaticly Turn off the Flashlight after it was enabled through ChopChop"/>
         <SeekBarPreference
@@ -42,5 +35,11 @@
             app:seekBarIncrement="1"
             app:summary="Value in minutes"
             app:showSeekBarValue="true"/>
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="true"
+            android:title="Ignore &quot;Do not Disturb&quot;"
+            android:summary="When enabled ChopChop will also Vibrate during &quot;Do not Disturb&quot;" />
     </PreferenceCategory>
 </PreferenceScreen>
