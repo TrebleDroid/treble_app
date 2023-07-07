@@ -1,5 +1,6 @@
 package me.phh.treble.app
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,6 +18,7 @@ import android.os.UserHandle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.preference.PreferenceManager
+import android.provider.Settings.Global
 import android.util.Log
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
@@ -111,7 +113,10 @@ object Doze: EntryStartup {
             try {
                 cameraManager.setTorchMode(torchCameraId, !flashLightStatus)
                 flashLightStatus = !flashLightStatus
-                vibrator.vibrate(VibrationEffect.createOneShot(250, VibrationEffect.EFFECT_DOUBLE_CLICK))
+
+                if(Global.getInt(contentResolver, "zen_mode") == 0 || chopchopIgnoreDnd){
+                    vibrator.vibrate(VibrationEffect.createOneShot(250, VibrationEffect.EFFECT_DOUBLE_CLICK))
+                }
 
                 //save current Timestamp
                 val timestamp = System.currentTimeMillis()
@@ -119,15 +124,16 @@ object Doze: EntryStartup {
 
 
                 //wait a minute and turn of flashlight if its still on
-                if(!flashLightStatus) return
+                if(!flashLightStatus || !chopchopAutoturnoffEnabled) return
                 dozeHandler.postDelayed(fun(){
                     if(flashLightChangedSinceWait != timestamp) return
 
                     cameraManager.setTorchMode(torchCameraId, false)
                     flashLightStatus = false
-                    vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.EFFECT_HEAVY_CLICK))
+                    if(Global.getInt(contentResolver, "zen_mode") != 0 && !chopchopIgnoreDnd) return
 
-                },1000 * 60 * 10)
+                    vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.EFFECT_HEAVY_CLICK))
+                },1000 * 60 * chopchopAutoturnoffTimout.toLong())
             } catch (e: CameraAccessException) {
                 Log.d("PHH", "ChopChop couldn't toggle FlashLight", e)
             }
@@ -138,6 +144,9 @@ object Doze: EntryStartup {
     var handwaveEnabled = false
     var pocketEnabled = false
     var chopchopEnabled = false
+    var chopchopAutoturnoffEnabled = true
+    var chopchopAutoturnoffTimout = 10
+    var chopchopIgnoreDnd = true
     var flashLightStatus = false
     var flashLightChangedSinceWait = System.currentTimeMillis()
     var torchCameraId = ""
@@ -147,11 +156,26 @@ object Doze: EntryStartup {
     lateinit var proximitySensor: Sensor
     lateinit var accelerometerSensor: Sensor
     lateinit var chopchopSensor: Sensor
+    lateinit var contentResolver : ContentResolver
     var pocket: Pocket? = null
     var chopchop: ChopChop? = null
     var accelerometer: AccelerometerListener? = null
 
-    fun updateState(handwave: Boolean, pocket: Boolean, chopchop: Boolean) {
+    fun updateState(
+            handwave: Boolean,
+            pocket: Boolean,
+            chopchop: Boolean,
+            chopchop_auto_turnoff: Boolean,
+            chopchop_auto_turnoff_timeout: Int,
+            chopchop_ignore_dnd: Boolean
+    ) {
+
+        chopchopAutoturnoffEnabled = chopchop_auto_turnoff
+        chopchopAutoturnoffTimout = chopchop_auto_turnoff_timeout
+        chopchopIgnoreDnd = chopchop_ignore_dnd
+
+        if(handwave == handwaveEnabled && pocket == pocketEnabled && chopchop == chopchopEnabled) return
+
         handwaveEnabled = handwave
         pocketEnabled = pocket
         chopchopEnabled = chopchop
@@ -228,11 +252,19 @@ object Doze: EntryStartup {
 
     val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
         when(key) {
-            DozeSettings.HANDWAVE_KEY, DozeSettings.POCKET_KEY, DozeSettings.CHOPCHOP_KEY -> {
+            DozeSettings.HANDWAVE_KEY,
+            DozeSettings.POCKET_KEY,
+            DozeSettings.CHOPCHOP_KEY,
+            DozeSettings.CHOPCHOP_AUTO_TURNOFF_KEY,
+            DozeSettings.CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY,
+            DozeSettings.CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY -> {
                 updateState(
                         sp.getBoolean(DozeSettings.HANDWAVE_KEY, false),
                         sp.getBoolean(DozeSettings.POCKET_KEY, false),
-                        sp.getBoolean(DozeSettings.CHOPCHOP_KEY, false)
+                        sp.getBoolean(DozeSettings.CHOPCHOP_KEY, false),
+                        sp.getBoolean(DozeSettings.CHOPCHOP_AUTO_TURNOFF_KEY, true),
+                        sp.getInt(DozeSettings.CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY, 10),
+                        sp.getBoolean(DozeSettings.CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY, true)
                 )
             }
         }
@@ -250,6 +282,7 @@ object Doze: EntryStartup {
             cameraManager = ctxt.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             torchCameraId = cameraManager.cameraIdList[0]
             vibrator = ctxt.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            contentResolver = ctxt.contentResolver
 
         } catch (e: Exception){}
 
@@ -262,6 +295,9 @@ object Doze: EntryStartup {
         spListener.onSharedPreferenceChanged(sp, DozeSettings.HANDWAVE_KEY)
         spListener.onSharedPreferenceChanged(sp, DozeSettings.POCKET_KEY)
         spListener.onSharedPreferenceChanged(sp, DozeSettings.CHOPCHOP_KEY)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.CHOPCHOP_AUTO_TURNOFF_KEY)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.CHOPCHOP_AUTO_TURNOFF_TIMEOUT_KEY)
+        spListener.onSharedPreferenceChanged(sp, DozeSettings.CHOPCHOP_AUTO_TURNOFF_IGNORE_DND_KEY)
         accelerometer = AccelerometerListener()
     }
 

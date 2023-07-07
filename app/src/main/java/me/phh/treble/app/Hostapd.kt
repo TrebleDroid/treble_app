@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.wifi.hostapd.V1_0.HostapdStatus
 import android.hardware.wifi.hostapd.V1_0.HostapdStatusCode
 import android.hardware.wifi.hostapd.V1_0.IHostapd
+import android.os.NativeHandle
 import android.os.SystemProperties
 import android.util.Log
 import java.io.File
@@ -18,6 +19,12 @@ class Hostapd: EntryStartup {
             Log.d("PHH", "Terminating access point")
             SystemProperties.set("ctl.stop", "hostapd")
         }
+
+        //Only added to make build work
+        override fun debug(p0: NativeHandle?, p1: ArrayList<String?>?) {
+            //TODO: Deleted this
+        }
+        //end of needed thing for building
 
         override fun removeAccessPoint(ifaceName: String): HostapdStatus {
             Log.d("PHH", "Stopping access point")
