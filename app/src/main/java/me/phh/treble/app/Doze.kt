@@ -275,18 +275,16 @@ object Doze: EntryStartup {
         sensorManager = ctxt.getSystemService(SensorManager::class.java)
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY, true)
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER, false)
+        cameraManager = ctxt.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
         try {
             chopchopSensor = Doze.sensorManager.getSensorList(Sensor.TYPE_ALL).first { it.stringType == "com.motorola.sensor.chopchop" }
             Log.d("PHH", "Found ChopChop Sensor, Initalizing needed Services")
-            cameraManager = ctxt.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             torchCameraId = cameraManager.cameraIdList[0]
             vibrator = ctxt.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             contentResolver = ctxt.contentResolver
 
         } catch (e: Exception){}
-
-
 
         val sp = PreferenceManager.getDefaultSharedPreferences(ctxt)
         sp.registerOnSharedPreferenceChangeListener(spListener)
