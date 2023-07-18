@@ -244,10 +244,14 @@ object Doze: EntryStartup {
 
     fun unregisterListeners() {
         //Pocket
-        sensorManager.unregisterListener(pocketSensorListener)
+        if(this.pocket != null){
+            sensorManager.unregisterListener(pocketSensorListener)
+        }
         //ChopChop
-        sensorManager.unregisterListener(chopchopSensorListener)
-        cameraManager.unregisterTorchCallback(torchStateListener)
+        if(this.chopchop != null){
+            sensorManager.unregisterListener(chopchopSensorListener)
+            cameraManager.unregisterTorchCallback(torchStateListener)
+        }
     }
 
     val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
