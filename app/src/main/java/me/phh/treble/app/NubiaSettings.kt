@@ -4,6 +4,9 @@ import android.util.Log
 
 object NubiaSettings : Settings {
     val dt2w = "nubia_double_tap_to_wake"
+    val bypassCharger = "nubia_bypass_charger"
+    val highTouchScreenSampleRate = "nubia_high_touch_sample_rate"
+    val highTouchScreenSensitivity = "nubia_high_touch_sensitivity"
     val tsGameMode = "nubia_touchscreen_game_mode"
     val fanSpeed = "nubia_fan_speed"
     val logoBreath = "nubia_redmagic_logo_breath"
@@ -11,8 +14,11 @@ object NubiaSettings : Settings {
     val boostCpu = "nubia_boost_cpu"
     val boostGpu = "nubia_boost_gpu"
     val boostCache = "nubia_boost_cache"
+    val boostUfs = "nubia_boost_ufs"
 
     override fun enabled() = Tools.vendorFp.toLowerCase().startsWith("nubia/")
+    fun is6Series() = Tools.vendorFp.toLowerCase().startsWith("nubia/nx669")
+
 }
 
 class NubiaSettingsFragment : SettingsFragment() {
