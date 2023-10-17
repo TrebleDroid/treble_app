@@ -51,19 +51,25 @@ class NubiaAutoFanControlService : Service() {
             }
         }
     private lateinit var sp: SharedPreferences
+    // Release after charger disconnected, or full charger
     private lateinit var wakeLock: WakeLock
     override fun onCreate() {
         this.sp = PreferenceManager.getDefaultSharedPreferences(this)
         val powerManager = this.getSystemService(POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nubiaFanControl:WakeLockStopFan")
-        // Case: Fan still start from last session and device rebooted.
-        stopFan()
         val connectionChangedIntent = IntentFilter()
         connectionChangedIntent.addAction(Intent.ACTION_POWER_CONNECTED)
         connectionChangedIntent.addAction(Intent.ACTION_POWER_DISCONNECTED)
         connectionChangedIntent.addAction(Intent.ACTION_BOOT_COMPLETED)
         connectionChangedIntent.addAction(Intent.ACTION_LOCKED_BOOT_COMPLETED)
         registerReceiver(powerConnectionChangedReceiver, connectionChangedIntent)
+        // Case: Check if it need to start fan after reboot/power up
+        if (canStartFan()){
+            startFan()
+        } else {
+            // Case: Fan still start from last session and device rebooted.
+            stopFan()
+        }
     }
 
     override fun onStartCommand(
