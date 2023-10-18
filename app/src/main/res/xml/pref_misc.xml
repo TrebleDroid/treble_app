@@ -86,8 +86,8 @@
 	<PreferenceCategory android:title="Backlight">
 		<SwitchPreference
             android:defaultValue="false"
-            android:key="key_misc_linear_brightness"
-            android:title="Use linear screen brightness slider" />
+            android:key="key_misc_low_gamma_brightness"
+            android:title="Set alternative brightness curve" />
 		<SwitchPreference
             android:defaultValue="false"
             android:key="key_misc_disable_buttons_backlight"

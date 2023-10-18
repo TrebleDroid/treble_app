@@ -18,7 +18,6 @@ object MiscSettings : Settings {
     val headsetFix = "key_huawei_headset_fix"
     val roundedCorners = "key_misc_rounded_corners"
     val roundedCornersOverlay = "key_misc_rounded_corners_overlay"
-    val linearBrightness = "key_misc_linear_brightness"
     val disableButtonsBacklight = "key_misc_disable_buttons_backlight"
     val forceNavbarOff = "key_misc_force_navbar_off"
     val bluetooth = "key_misc_bluetooth"
@@ -40,6 +39,7 @@ object MiscSettings : Settings {
     val fodColor = "key_misc_fod_color"
     val mtkTouchHintIsRotate = "key_misc_mediatek_touch_hint_rotate"
     val allowBinderThread = "key_misc_allow_binder_thread_on_incoming_calls"
+    val LowGammaBrightness = "key_misc_low_gamma_brightness"
 
     override fun enabled() = true
 }
