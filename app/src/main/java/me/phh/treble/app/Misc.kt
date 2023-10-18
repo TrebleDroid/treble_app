@@ -171,19 +171,24 @@ object Misc: EntryStartup {
                 android.util.Log.d("PHH", "Setting bluetooth workaround to $value")
                 when (value) {
                     "none" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "00000000")
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                     "mediatek" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "000001")
+                        // 182 - READ_DEFAULT_ERRONEOUS_DATA_REPORTING
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "182")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                     "huawei" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000001")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "000000000000000000000011111")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "000001")
+                        // 182 - READ_DEFAULT_ERRONEOUS_DATA_REPORTING
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "182")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                 }
             }
