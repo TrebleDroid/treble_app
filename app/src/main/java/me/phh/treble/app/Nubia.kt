@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Parcel
+import android.os.RemoteException
 import android.os.SystemProperties
 import android.os.UserHandle
 import android.preference.PreferenceManager
@@ -198,12 +200,17 @@ object Nubia : EntryStartup {
 
         spListener.onSharedPreferenceChanged(sp, NubiaSettings.logoBreath)
         spListener.onSharedPreferenceChanged(sp, NubiaSettings.redmagicLed)
-
-        spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostCpu)
-        spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostGpu)
-        spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostCache)
-        spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostUfs)
-
+        try {
+            // Prevent multiple root dialog show up
+            val p = Runtime.getRuntime().exec("su")
+            p.waitFor();
+            spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostCpu)
+            spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostGpu)
+            spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostCache)
+            spListener.onSharedPreferenceChanged(sp, NubiaSettings.boostUfs)
+        } catch(t: Throwable) {
+            Log.d("PHH", "Denied Root")
+        }
         // For 6, 6s, 6s pro only
         if (SystemProperties.get("persist.sys.support.fan", "false") == "true") {
             // Auto enable fan after connected to power supplier
