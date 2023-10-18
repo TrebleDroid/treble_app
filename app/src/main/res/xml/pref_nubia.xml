@@ -68,29 +68,25 @@
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="nubia_boost_cpu"
-            android:title="Boost CPU"
-            app:summary="*Required root" />
+            android:title="Boost CPU" />
         <CheckBoxPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="nubia_boost_cache"
-            android:title="Boost caches"
-            app:summary="*Required root" />
+            android:title="Boost caches" />
         <CheckBoxPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="nubia_boost_gpu"
-            android:title="Boost GPU"
-            app:summary="*Required root" />
+            android:title="Boost GPU" />
         <CheckBoxPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="nubia_boost_ufs"
             android:title="Boost UFS"
-            app:summary="*Required root"
             app:summaryOn="Increase Read/Write speed" />
     </PreferenceCategory>
 </PreferenceScreen>
