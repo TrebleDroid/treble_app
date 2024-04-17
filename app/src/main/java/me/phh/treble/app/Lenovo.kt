@@ -10,7 +10,7 @@ import android.util.Log
 import java.io.File
 
 object Lenovo: EntryStartup {
-    val dtPanel = listOf("/sys/devices/virtual/touch/tp_dev/gesture_on", "/proc/gesture_control")
+    val dtPanel = "/proc/gesture_control"
     val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
         when(key) {
             LenovoSettings.dt2w -> {
