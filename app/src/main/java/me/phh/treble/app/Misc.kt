@@ -84,11 +84,6 @@ object Misc: EntryStartup {
                 SystemProperties.set("persist.sys.signal.level", value)
                 Log.d("PHH", "Setting signal level method to $value")
             }
-            MiscSettings.fpsDivisor -> {
-                val value = sp.getString(key, "1")
-                Log.d("PHH", "Setting fps divisor to $value")
-                Settings.Global.putString(c.contentResolver, "fps_divisor", value)
-            }
             MiscSettings.cameraTimestampOverride -> {
                 val value = sp.getString(key, "-1")
                 Log.d("PHH", "Setting cameraTimestampOverride to $value")
@@ -154,10 +149,6 @@ object Misc: EntryStartup {
                     Settings.Secure.putFloat(c.contentResolver, "sysui_rounded_size", value)
                 }
             }
-            MiscSettings.linearBrightness -> {
-                val value = sp.getBoolean(key, false)
-                SystemProperties.set("persist.sys.phh.linear_brightness", if (value) "true" else "false")
-            }
             MiscSettings.disableButtonsBacklight -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.disable_buttons_light", if (value) "true" else "false")
@@ -171,19 +162,24 @@ object Misc: EntryStartup {
                 android.util.Log.d("PHH", "Setting bluetooth workaround to $value")
                 when (value) {
                     "none" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "00000000")
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                     "mediatek" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "00000000")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "000001")
+                        // 182 - READ_DEFAULT_ERRONEOUS_DATA_REPORTING
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "182")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                     "huawei" -> {
-                        SystemProperties.set("persist.sys.bt.unsupport.features", "00000001")
-                        SystemProperties.set("persist.sys.bt.unsupport.states", "000000000000000000000011111")
-                        SystemProperties.set("persist.sys.bt.unsupport.stdfeatures", "000001")
+                        // 182 - READ_DEFAULT_ERRONEOUS_DATA_REPORTING
+                        SystemProperties.set("persist.sys.bt.unsupported.commands", "182")
+                        SystemProperties.set("persist.sys.bt.unsupported.ogfeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.lefeatures", "")
+                        SystemProperties.set("persist.sys.bt.unsupported.states", "")
                     }
                 }
             }
@@ -210,6 +206,10 @@ object Misc: EntryStartup {
             MiscSettings.disableAudioEffects -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.disable_audio_effects", if (value) "1" else "0")
+            }
+            MiscSettings.disableFastAudio -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.disable_fast_audio", if (value) "1" else "0")
             }
             MiscSettings.sysbta -> {
                 val value = sp.getBoolean(key, false)
@@ -269,6 +269,39 @@ object Misc: EntryStartup {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.allow_binder_thread_on_incoming_calls", if(value) "1" else "0")
             }
+            MiscSettings.lowGammaBrightness -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.low_gamma_brightness", if (value) "true" else "false")
+            }
+            MiscSettings.forceDisplay5g -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.force_display_5g", if(value) "1" else "0")
+            }
+            MiscSettings.linearBrightness -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.linear_brightness", if(value) "1" else "0")
+            }
+            MiscSettings.disableVoiceCallIn -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.disable_voice_call_in", if (value) "true" else "false")
+            }
+            MiscSettings.mtkGedKpi -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.mtk_ged_kpi", if (value) "1" else "0")
+            }
+            MiscSettings.disableSfGlBackpressure -> {
+                val value = sp.getBoolean(key, false)
+                // Note: Reversed value because the prop is enabling
+                SystemProperties.set("persist.sys.phh.enable_sf_gl_backpressure", if (value) "0" else "1")
+            }
+            MiscSettings.disableSaeUpgrade -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.wifi_disable_sae", if (value) "true" else "false")
+            }
+            MiscSettings.escoTransportUnitSize -> {
+                val value = sp.getString(key, "0")
+                SystemProperties.set("persist.sys.bt.esco_transport_unit_size", value)
+            }
         }
     }
 
@@ -281,7 +314,6 @@ object Misc: EntryStartup {
         this.ctxt = WeakReference(ctxt.applicationContext)
 
         //Refresh parameters on boot
-        spListener.onSharedPreferenceChanged(sp, MiscSettings.fpsDivisor)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.cameraTimestampOverride)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.mobileSignal)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.maxAspectRatioPreO)

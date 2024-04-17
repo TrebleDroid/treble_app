@@ -14,12 +14,6 @@
             android:key="key_samsung_disable_back_mic"
             android:title="Disable Built-In Back Mic"
             android:summary="May fix broken mic on video recording" />
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/pref_samsung_transport_size"
-            android:entryValues="@array/pref_samsung_transport_size_values"
-            android:key="key_samsung_esco_transport_unit_size"
-            android:title="Set eSCO transport unit size" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Screen">
         <SwitchPreference
@@ -49,12 +43,12 @@
             android:key="key_samsung_camera_ids"
             android:title="Enable access to all cameras"
             android:summary="Requires Q vendor" />
-		<EditTextPreference
+        <EditTextPreference
             android:defaultValue="1"
             android:key="key_samsung_flash_strength"
-	        android:title="Set flash strength"
-	        android:summary="Usually values are integers between 1 and 5"
-	        android:inputType="number" />
+            android:title="Set flash strength"
+            android:summary="Usually values are integers between 1 and 5"
+            android:inputType="number" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Workarounds">
         <SwitchPreference

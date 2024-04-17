@@ -57,6 +57,8 @@ class SettingsActivity : PreferenceActivity() {
             target.removeIf { it.fragment == HuaweiSettingsFragment::class.java.name }
         if (!SamsungSettings.enabled())
             target.removeIf { it.fragment == SamsungSettingsFragment::class.java.name }
+        if (!TranssionSettings.enabled())
+            target.removeIf { it.fragment == TranssionSettingsFragment::class.java.name }
         if (!XiaomiSettings.enabled())
             target.removeIf { it.fragment == XiaomiSettingsFragment::class.java.name }
         if (!OppoSettings.enabled())
@@ -92,6 +94,7 @@ class SettingsActivity : PreferenceActivity() {
                 || HuaweiSettingsFragment::class.java.name == fragmentName
                 || MiscSettingsFragment::class.java.name == fragmentName
                 || SamsungSettingsFragment::class.java.name == fragmentName
+                || TranssionSettingsFragment::class.java.name == fragmentName
                 || XiaomiSettingsFragment::class.java.name == fragmentName
                 || OppoSettingsFragment::class.java.name == fragmentName
                 || AsusSettingsFragment::class.java.name == fragmentName
@@ -101,6 +104,7 @@ class SettingsActivity : PreferenceActivity() {
                 || NubiaSettingsFragment::class.java.name == fragmentName
                 || ImsSettingsFragment::class.java.name == fragmentName
                 || CustomSettingsFragment::class.java.name == fragmentName
+                || AudioEffectsFragment::class.java.name == fragmentName
     }
 
     companion object {

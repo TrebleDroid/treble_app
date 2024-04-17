@@ -10,7 +10,6 @@ import androidx.preference.Preference
 
 object MiscSettings : Settings {
     val mobileSignal = "key_misc_mobile_signal"
-    val fpsDivisor = "key_misc_fps_divisor"
     val displayFps = "key_misc_display_fps"
     val maxAspectRatioPreO = "key_misc_max_aspect_ratio_pre_o"
     val multiCameras = "key_misc_multi_camera"
@@ -18,7 +17,6 @@ object MiscSettings : Settings {
     val headsetFix = "key_huawei_headset_fix"
     val roundedCorners = "key_misc_rounded_corners"
     val roundedCornersOverlay = "key_misc_rounded_corners_overlay"
-    val linearBrightness = "key_misc_linear_brightness"
     val disableButtonsBacklight = "key_misc_disable_buttons_backlight"
     val forceNavbarOff = "key_misc_force_navbar_off"
     val bluetooth = "key_misc_bluetooth"
@@ -26,6 +24,7 @@ object MiscSettings : Settings {
     val removeTelephony = "key_misc_removetelephony"
     val remotectl = "key_misc_remotectl"
     val disableAudioEffects = "key_misc_disable_audio_effects"
+    val disableFastAudio = "key_misc_disable_fast_audio"
     val cameraTimestampOverride = "key_misc_camera_timestamp"
     val sysbta = "key_misc_dynamic_sysbta"
     val noHwcomposer = "key_misc_no_hwcomposer"
@@ -39,7 +38,15 @@ object MiscSettings : Settings {
     val restartSystemUI = "key_misc_restart_systemui"
     val fodColor = "key_misc_fod_color"
     val mtkTouchHintIsRotate = "key_misc_mediatek_touch_hint_rotate"
+    val mtkGedKpi = "key_misc_mediatek_ged_kpi"
     val allowBinderThread = "key_misc_allow_binder_thread_on_incoming_calls"
+    val lowGammaBrightness = "key_misc_low_gamma_brightness"
+    val linearBrightness = "key_misc_linear_brightness"
+    val forceDisplay5g = "key_misc_force_display_5g"
+    val disableVoiceCallIn = "key_misc_disable_voice_call_in"
+    val disableSfGlBackpressure = "key_misc_disable_sf_gl_backpressure"
+    val disableSaeUpgrade = "key_misc_disable_sae_upgrade"
+    val escoTransportUnitSize = "key_misc_esco_transport_unit_size"
 
     override fun enabled() = true
 }

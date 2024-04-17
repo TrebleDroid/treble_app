@@ -8,6 +8,7 @@ import android.content.*
 import android.content.pm.PackageInstaller
 import android.hardware.display.DisplayManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
@@ -101,6 +102,8 @@ class ImsSettingsFragment : SettingsFragment() {
                     Ims.gotMtkQ -> Pair("https://treble.phh.me/stable/ims-mtk-q.apk", "MediaTek Q vendor")
                     Ims.gotMtkR -> Pair("https://treble.phh.me/stable/ims-mtk-r.apk", "MediaTek R vendor")
                     Ims.gotMtkS -> Pair("https://treble.phh.me/stable/ims-mtk-s.apk", "MediaTek S vendor")
+                    (Ims.gotQcomHidl || Ims.gotQcomAidl) && Build.VERSION.SDK_INT >= 34
+                        -> Pair("https://treble.phh.me/ims-caf-u.apk", "Qualcomm vendor")
                     Ims.gotQcomHidlMoto -> Pair("https://treble.phh.me/stable/ims-caf-moto.apk", "Qualcomm pre-S vendor (Motorola)")
                     Ims.gotQcomHidl -> Pair("https://treble.phh.me/stable/ims-q.64.apk", "Qualcomm pre-S vendor")
                     Ims.gotQcomAidl -> Pair("https://treble.phh.me/stable/ims-caf-s.apk", "Qualcomm S+ vendor")
@@ -167,7 +170,7 @@ class ImsSettingsFragment : SettingsFragment() {
                                     this@ImsSettingsFragment.activity,
                                     1,
                                     Intent("me.phh.treble.app.ImsInstalled"),
-                                    PendingIntent.FLAG_ONE_SHOT).intentSender)
+                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE).intentSender)
                     activity.unregisterReceiver(this)
                 }
 

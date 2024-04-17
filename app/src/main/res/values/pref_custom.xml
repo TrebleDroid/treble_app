@@ -3,10 +3,12 @@
     <array name="pref_custom_pointer_type">
       <item>"Mouse cursor"</item>
       <item>"Pen pointer"</item>
+      <item>"Transparent"</item>
     </array>
     <array name="pref_custom_pointer_type_values">
       <item>"mouse"</item>
       <item>"pen"</item>
+      <item>"transparent"</item>
     </array>
 
     <array name="pref_custom_accent_color">
