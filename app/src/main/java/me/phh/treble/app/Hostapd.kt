@@ -14,7 +14,7 @@ import javax.crypto.spec.PBEKeySpec
 
 class Hostapd: EntryStartup {
     val hostapdSvc = object: android.hardware.wifi.hostapd.V1_0.IHostapd.Stub() {
-        override fun debug(p0: android.os.NativeHandle, p1: ArrayList<String>) {
+        override fun release(p0: android.os.NativeHandle, p1: ArrayList<String>) {
         }
         override fun terminate() {
             Log.d("PHH", "Terminating access point")
