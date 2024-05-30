@@ -199,6 +199,10 @@ object Misc: EntryStartup {
                         || (thisMode.getPhysicalHeight() != lastMode.getPhysicalHeight()))
                 }
             }
+            MiscSettings.dynamicFps -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.dynamic_fps", if (value) "1" else "0")
+            }
             MiscSettings.remotectl -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.remote", if (value) "true" else "false")

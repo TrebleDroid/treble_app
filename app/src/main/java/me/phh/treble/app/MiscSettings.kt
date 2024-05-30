@@ -11,6 +11,7 @@ import androidx.preference.Preference
 object MiscSettings : Settings {
     val mobileSignal = "key_misc_mobile_signal"
     val displayFps = "key_misc_display_fps"
+    val dynamicFps = "key_misc_dynamic_fps"
     val maxAspectRatioPreO = "key_misc_max_aspect_ratio_pre_o"
     val multiCameras = "key_misc_multi_camera"
     val forceCamera2APIHAL3 = "key_misc_force_camera2api_hal3"

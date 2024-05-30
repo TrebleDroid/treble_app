@@ -51,6 +51,11 @@
             android:entryValues="@array/pref_misc_display_fps_values"
             android:key="key_misc_display_fps"
             android:title="Force FPS" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_misc_dynamic_fps"
+            android:title="Dynamic FPS"
+            android:summary="Adjust refresh rate depending on the content on screen\nRequires reboot"/>
         <Preference
             android:key="key_misc_restart_systemui"
             android:title="Restart SystemUI"
