@@ -85,10 +85,7 @@ object Lid: EntryStartup {
     }
 
     override fun startup(ctxt: Context) {
-        if(Tools.vendorFpLow.startsWith("Lenovo/TB-9707F_PRC/TB-9707F".lowercase()) || Tools.vendorFpLow.startsWith("Lenovo/LenovoTB-J716F_PRC/J716F".lowercase())) {
-            lenovo(ctxt)
-        }
-        if(Tools.vendorFpLow.startsWith("Lenovo/TB320FC_PRC".lowercase()) || Tools.vendorFpLow.startsWith("Lenovo/LenovoTB-J716F_PRC/J716F".lowercase())) {
+        if(Tools.vendorFpLow.startsWith("Lenovo/TB-9707F_PRC/TB-9707F".lowercase()) || Tools.vendorFpLow.startsWith("Lenovo/TB320FC".lowercase()) || Tools.vendorFpLow.startsWith("Lenovo/LenovoTB-J716F_PRC/J716F".lowercase())) {
             lenovo(ctxt)
         }
         if(Tools.vendorFpLow.startsWith("Cat/S22FLIP/S22FLIP".lowercase())) {
