@@ -14,6 +14,7 @@ import android.os.SystemProperties
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import dalvik.system.PathClassLoader
 import java.lang.ref.WeakReference
 
 @SuppressLint("StaticFieldLeak")
