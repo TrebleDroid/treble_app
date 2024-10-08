@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -27,19 +28,65 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <uses-library android:name="android.hidl.manager.V1_0" android:required="false" />
-        <uses-library android:name="android.hardware.wifi.hostapd.V1_0" android:required="false" />
         <uses-library android:name="vendor.huawei.hardware.biometrics.fingerprint.V2_1" android:required="false"/>
         <uses-library android:name="vendor.huawei.hardware.tp.V1_0" android:required="false"/>
         <uses-library android:name="vendor.qti.hardware.radio.am.V1_0" android:required="false"/>
         <uses-library android:name="vendor.qti.qcril.am.V1_0" android:required="false"/>
-        <uses-library android:name="vendor.xiaomi.hardware.displayfeature.V1_0" android:required="false"/>
 
         <service android:name=".EntryService" />
+        <service android:name=".NubiaAutoFanControlService" />
+
+        <service
+            android:name=".NubiaGameModeTilesService"
+            android:exported="true"
+            android:icon="@drawable/tile_game_mode"
+            android:label="Game Mode"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:enabled="false">
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".NubiaFanControlTilesService"
+            android:exported="true"
+            android:icon="@drawable/tile_fan_control"
+            android:label="Fan Control"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:enabled="false">
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".NubiaShoulderBtnTilesService"
+            android:exported="true"
+            android:icon="@drawable/tile_game_mode"
+            android:label="Shoulder triggers"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:enabled="false">
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
         <receiver android:name=".Starter"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="me.phh.update" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>

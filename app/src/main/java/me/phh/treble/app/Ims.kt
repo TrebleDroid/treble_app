@@ -14,6 +14,7 @@ import android.os.SystemProperties
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import dalvik.system.PathClassLoader
 import java.lang.ref.WeakReference
 
 @SuppressLint("StaticFieldLeak")
@@ -70,6 +71,8 @@ object Ims: EntryStartup {
             .find { i -> mHidlService.get("vendor.mediatek.hardware.mtkradioex@2.0::IMtkRadioEx", i) != null } != null
     val gotMtkS = mAllSlots
             .find { i -> mHidlService.get("vendor.mediatek.hardware.mtkradioex@3.0::IMtkRadioEx", i) != null } != null
+    val gotMtkAidl = mAllSlots
+            .find { i -> ServiceManager.getService("vendor.mediatek.hardware.mtkradioex.ims.IMtkRadioExIms/" + i) != null } != null
     val gotQcomHidl = mAllSlots
             .find { i -> mHidlService.get("vendor.qti.hardware.radio.ims@1.0::IImsRadio", i) != null } != null
     val gotQcomHidlMoto = gotQcomHidl
@@ -85,6 +88,7 @@ object Ims: EntryStartup {
 
     override fun startup(ctxt: Context) {
         if (!ImsSettings.enabled()) return
+        val gotFloss = ctxt.packageManager.getInstalledPackages(0).find { it.packageName == "me.phh.ims" } != null
 
         val sp = PreferenceManager.getDefaultSharedPreferences(ctxt)
         sp.registerOnSharedPreferenceChangeListener(spListener)
@@ -93,12 +97,18 @@ object Ims: EntryStartup {
 
         val allOverlays = listOf("me.phh.treble.overlay.mtkims_telephony", "me.phh.treble.overlay.cafims_telephony", "me.phh.treble.overlay.hwims_telephony")
         val selectOverlay = when {
-            gotMtkP || gotMtkQ || gotMtkR || gotMtkS -> "me.phh.treble.overlay.mtkims_telephony"
+            gotFloss -> "me.phh.treble.overlay.flossims_telephony"
+            gotMtkP || gotMtkQ || gotMtkR || gotMtkS || gotMtkAidl -> "me.phh.treble.overlay.mtkims_telephony"
             gotQcomHidl || gotQcomAidl -> "me.phh.treble.overlay.cafims_telephony"
             gotSLSI -> "me.phh.treble.overlay.slsiims_telephony"
             gotSPRD -> "me.phh.treble.overlay.sprdims_telephony"
-	    gotHW -> "me.phh.treble.overlay.hwims_telephony"
+            gotHW -> "me.phh.treble.overlay.hwims_telephony"
             else -> null
+        }
+        if (gotFloss) {
+            Misc.safeSetprop("persist.sys.phh.ims.floss", "true")
+        } else {
+            Misc.safeSetprop("persist.sys.phh.ims.floss", "false")
         }
         if(selectOverlay != null) {
             allOverlays

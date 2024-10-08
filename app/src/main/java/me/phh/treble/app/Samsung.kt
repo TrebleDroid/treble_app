@@ -85,10 +85,6 @@ class Samsung: EntryStartup {
                 val value = if(b) "1" else "0"
                 Misc.safeSetprop("persist.sys.phh.caf.audio_policy", value)
             }
-            SamsungSettings.escoTransportUnitSize -> {
-                val value = sp.getString(key, "0")
-                SystemProperties.set("persist.sys.bt.esco_transport_unit_size", value)
-            }
             SamsungSettings.fodSingleClick -> {
                 val cmd = if(sp.getBoolean(key, false)) "fod_lp_mode,1" else "fod_lp_mode,0"
                 tsCmd(cmd)
@@ -144,6 +140,7 @@ class Samsung: EntryStartup {
         Log.e("PHH", "Samsung TS: Supports aod_enable ${tsCmdExists("aod_enable")}")
 
         tsCmd("check_connection")
+        tsCmd("fod_enable,1,1,0")
 
         for(malware in listOf("com.dti.globe", "com.singtel.mysingtel", "com.LogiaGroup.LogiaDeck", "com.mygalaxy")) {
             try {

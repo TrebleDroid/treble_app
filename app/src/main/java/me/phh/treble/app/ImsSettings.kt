@@ -8,6 +8,7 @@ import android.content.*
 import android.content.pm.PackageInstaller
 import android.hardware.display.DisplayManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import dalvik.system.PathClassLoader
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
@@ -27,6 +29,23 @@ object ImsSettings : Settings {
     val createApn = "key_ims_create_apn"
     val forceEnableSettings = "key_ims_force_enable_setting"
     val installImsApk = "key_ims_install_apn"
+
+    fun checkHasPhhSignature(): Boolean {
+        try {
+            val cl = PathClassLoader(
+                "/system/framework/services.jar",
+                ClassLoader.getSystemClassLoader()
+            )
+            val pmUtils = cl.loadClass("com.android.server.pm.PackageManagerServiceUtils")
+            val field = pmUtils.getDeclaredField("PHH_SIGNATURE")
+            Log.d("PHH", "checkHasPhhSignature Field $field")
+            return true
+        } catch(t: Throwable) {
+            Log.d("PHH", "checkHasPhhSignature Field failed")
+            return false
+        }
+    }
+
 
     override fun enabled() = true
 }
@@ -92,18 +111,25 @@ class ImsSettingsFragment : SettingsFragment() {
         Log.d("PHH", "MTK Q radio = ${Ims.gotMtkQ}")
         Log.d("PHH", "MTK R radio = ${Ims.gotMtkR}")
         Log.d("PHH", "MTK S radio = ${Ims.gotMtkS}")
+        Log.d("PHH", "MTK AIDL radio = ${Ims.gotMtkAidl}")
         Log.d("PHH", "Qualcomm HIDL radio = ${Ims.gotQcomHidl}")
         Log.d("PHH", "Qualcomm AIDL radio = ${Ims.gotQcomAidl}")
 
+        val signSuffix = if(ImsSettings.checkHasPhhSignature()) "-resigned" else ""
+
         val (url, message) =
                 when {
-                    Ims.gotMtkP -> Pair("https://treble.phh.me/stable/ims-mtk-p.apk", "MediaTek P vendor")
-                    Ims.gotMtkQ -> Pair("https://treble.phh.me/stable/ims-mtk-q.apk", "MediaTek Q vendor")
-                    Ims.gotMtkR -> Pair("https://treble.phh.me/stable/ims-mtk-r.apk", "MediaTek R vendor")
-                    Ims.gotMtkS -> Pair("https://treble.phh.me/stable/ims-mtk-s.apk", "MediaTek S vendor")
-                    Ims.gotQcomHidlMoto -> Pair("https://treble.phh.me/stable/ims-caf-moto.apk", "Qualcomm pre-S vendor (Motorola)")
-                    Ims.gotQcomHidl -> Pair("https://treble.phh.me/stable/ims-q.64.apk", "Qualcomm pre-S vendor")
-                    Ims.gotQcomAidl -> Pair("https://treble.phh.me/stable/ims-caf-s.apk", "Qualcomm S+ vendor")
+                    (Ims.gotMtkR || Ims.gotMtkS || Ims.gotMtkAidl) && Build.VERSION.SDK_INT >= 34
+                        -> Pair("https://treble.phh.me/ims-mtk-u$signSuffix.apk", "MediaTek R+ vendor")
+                    Ims.gotMtkP -> Pair("https://treble.phh.me/stable/ims-mtk-p$signSuffix.apk", "MediaTek P vendor")
+                    Ims.gotMtkQ -> Pair("https://treble.phh.me/stable/ims-mtk-q$signSuffix.apk", "MediaTek Q vendor")
+                    Ims.gotMtkR -> Pair("https://treble.phh.me/stable/ims-mtk-r$signSuffix.apk", "MediaTek R vendor")
+                    Ims.gotMtkS -> Pair("https://treble.phh.me/stable/ims-mtk-s$signSuffix.apk", "MediaTek S vendor")
+                    (Ims.gotQcomHidl || Ims.gotQcomAidl) && Build.VERSION.SDK_INT >= 34
+                        -> Pair("https://treble.phh.me/ims-caf-u$signSuffix.apk", "Qualcomm vendor")
+                    Ims.gotQcomHidlMoto -> Pair("https://treble.phh.me/stable/ims-caf-moto$signSuffix.apk", "Qualcomm pre-S vendor (Motorola)")
+                    Ims.gotQcomHidl -> Pair("https://treble.phh.me/stable/ims-q.64$signSuffix.apk", "Qualcomm pre-S vendor")
+                    Ims.gotQcomAidl -> Pair("https://treble.phh.me/stable/ims-caf-s$signSuffix.apk", "Qualcomm S+ vendor")
                     else -> Pair("", "NOT SUPPORTED")
                 }
 
@@ -167,7 +193,7 @@ class ImsSettingsFragment : SettingsFragment() {
                                     this@ImsSettingsFragment.activity,
                                     1,
                                     Intent("me.phh.treble.app.ImsInstalled"),
-                                    PendingIntent.FLAG_ONE_SHOT).intentSender)
+                                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE).intentSender)
                     activity.unregisterReceiver(this)
                 }
 

@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: "temurin"
+        java-version: "17"
+
+    - name: Get latest commit hash
+      id: latest_commit
+      run: echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Build APK
+      run: |
+        bash build.sh release
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: TrebleApp
+        path: TrebleApp.apk
+
+    - name: Update APK
+      run: |
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git config --global credential.helper cache
+        git clone https://${{ secrets.TREBLEDROID_TOKEN }}@github.com/TrebleDroid/vendor_hardware_overlay
+        cd vendor_hardware_overlay
+        git checkout pie
+        cp ../TrebleApp.apk TrebleApp/app.apk
+        git add TrebleApp/app.apk
+        git commit -m "Up TrebleApp to TrebleDroid/treble_app@${{ steps.latest_commit.outputs.hash }}"
+        git push origin pie || true

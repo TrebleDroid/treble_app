@@ -16,8 +16,20 @@ object Custom: EntryStartup {
         when(key) {
             CustomSettings.pointerType -> {
                 val value = sp.getString(key, "mouse")
-                val newValue = if (value == "pen") "true" else "false"
-                SystemProperties.set("persist.sys.overlay.spen_pointer", newValue)
+                when (value) {
+                    "mouse" -> {
+                        SystemProperties.set("persist.sys.overlay.spen_pointer", "false")
+                        SystemProperties.set("persist.sys.overlay.trans_pointer", "false")
+                    }
+                    "pen" -> {
+                        SystemProperties.set("persist.sys.overlay.spen_pointer", "true")
+                        SystemProperties.set("persist.sys.overlay.trans_pointer", "false")
+                    }
+                    "transparent" -> {
+                        SystemProperties.set("persist.sys.overlay.spen_pointer", "false")
+                        SystemProperties.set("persist.sys.overlay.trans_pointer", "true")
+                    }
+                }
             }
             CustomSettings.accentColor -> {
                 val value = sp.getString(key, "")
