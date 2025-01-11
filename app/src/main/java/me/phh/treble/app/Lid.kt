@@ -123,6 +123,7 @@ object Lid: EntryStartup {
         if(Tools.vendorFpLow.startsWith("Lenovo/TB-9707F_PRC/TB-9707F".lowercase()) ||
             Tools.vendorFpLow.startsWith("Lenovo/LenovoTB-J716F_PRC/J716F".lowercase()) ||
             Tools.vendorFpLow.startsWith("Lenovo/TB320FC".lowercase()) ||
+            Tools.vendorFpLow.startsWith("NEC/LAVIETab9QHD1/LAVIETab9QHD1".lowercase()) ||
             Tools.vendorFpLow.startsWith("Lenovo/TB321FU".lowercase())
         ) {
             lenovo(ctxt)
