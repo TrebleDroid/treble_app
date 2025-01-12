@@ -61,8 +61,10 @@ object Lid: EntryStartup {
     }
     fun lenovo(ctxt: Context) {
         val sensorManager = ctxt.getSystemService(SensorManager::class.java)
-        val sensors = listOf("ah1902 Hall Effect Sensor Wakeup", "bu52053nvx Hall Effect Sensor Wakeup", "mmc56x3x Hall Effect Sensor Wakeup", "qmc630x Hall Effect Sensor Wakeup")
-        val lidSensor = sensorManager.getSensorList(Sensor.TYPE_ALL).firstOrNull() { sensor -> sensors.any { name -> sensor.name.contains(name)}}
+        val sensors = listOf("ah1902", "bu52053nvx", "bu52053nvx", "mmc56x3x", "qmc630x")
+        val lidSensor = sensorManager.getSensorList(Sensor.TYPE_ALL).firstOrNull() {
+            sensor -> sensors.any { name -> sensor.name.contains("$name Hall Effect Sensor Wakeup") }
+        }
         if(lidSensor == null) {
             Log.d("PHH", "Failed finding sensor for lid wakeup")
             for(s in sensorManager.getSensorList(Sensor.TYPE_ALL)) {
@@ -120,22 +122,28 @@ object Lid: EntryStartup {
 
     override fun startup(ctxt: Context) {
         Log.d("PHH", "LID vendorFpLow = " + Tools.vendorFpLow)
-        if(Tools.vendorFpLow.startsWith("Lenovo/TB-9707F_PRC/TB-9707F".lowercase()) ||
-            Tools.vendorFpLow.startsWith("Lenovo/LenovoTB-J716F_PRC/J716F".lowercase()) ||
-            Tools.vendorFpLow.startsWith("Lenovo/TB320FC".lowercase()) ||
-            Tools.vendorFpLow.startsWith("NEC/LAVIETab9QHD1/LAVIETab9QHD1".lowercase()) ||
-            Tools.vendorFpLow.startsWith("Lenovo/TB321FU".lowercase())
-        ) {
+        val lenovoTablets = listOf(
+            "Lenovo/TB-9707F_PRC/TB-9707F",
+            "Lenovo/TB320FC",
+            "NEC/LAVIETab9QHD1/LAVIETab9QHD1",
+            "Lenovo/LenovoTB-J716F_PRC/J716F",
+            "Lenovo/TB321FU"
+        )
+        if(lenovoTablets.any { Tools.vendorFpLow.startsWith(it, ignoreCase = true) }) {
             lenovo(ctxt)
         }
+
         if(Tools.vendorFpLow.startsWith("Cat/S22FLIP/S22FLIP".lowercase())) {
             cat(ctxt)
         }
-        if(Tools.vendorFpLow.startsWith("hi6250".lowercase()) ||
-            Tools.vendorFpLow.startsWith("kirin710".lowercase()) ||
-            Tools.vendorFpLow.startsWith("kirin970".lowercase()) ||
-            Tools.vendorFpLow.startsWith("hi3660".lowercase())
-            ) {
+
+        val huaweiDevices = listOf(
+            "hi6250",
+            "kirin710",
+            "kirin970",
+            "hi3660"
+        )
+        if(huaweiDevices.any { Tools.vendorFpLow.startsWith(it, ignoreCase = true) }) {
             huawei(ctxt)
         }
     }
