@@ -146,6 +146,11 @@
             android:defaultValue="true"
             android:key="key_misc_dynamic_sysbta"
             android:title="Use System Wide BT HAL" />
+        <SwitchPreference
+            android:key="key_misc_disable_le_apcfe"
+            android:defaultValue="false"
+            android:title="Disable LE APCF Extended features"
+            android:summary="Fix bluetooth crashing on some devices" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/pref_misc_bluetooth"

@@ -50,6 +50,7 @@ object MiscSettings : Settings {
     val disableSfHwcBackpressure = "key_misc_disable_sf_hwc_backpressure"
     val disableSaeUpgrade = "key_misc_disable_sae_upgrade"
     val escoTransportUnitSize = "key_misc_esco_transport_unit_size"
+    val disableLeApcfExtended = "key_misc_disable_le_apcfe"
 
     override fun enabled() = true
 }
