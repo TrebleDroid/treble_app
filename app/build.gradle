@@ -31,6 +31,8 @@ dependencies {
     compileOnly fileTree(dir: 'libs', include: '*.jar')
     implementation files('libs/vendor.hct.hardware.gesturewake-V1.0-java.jar')
     implementation files('libs/vendor.ims.zenmotion-V1.0-java.jar')
+    implementation files('libs/vendor.xiaomi.hw.touchfeature-V1-java.jar')
+    implementation files('libs/vendor.mediatek.hardware.agolddaemon-V1-java.jar')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.tukaani:xz:1.9'

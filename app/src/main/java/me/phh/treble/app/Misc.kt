@@ -13,6 +13,8 @@ import android.util.Log
 import java.lang.ref.WeakReference
 
 import vendor.ims.zenmotion.V1_0.IZenMotion;
+import vendor.xiaomi.hw.touchfeature.ITouchFeature
+import vendor.mediatek.hardware.agolddaemon.IAgoldDaemon
 
 @SuppressLint("StaticFieldLeak")
 object Misc: EntryStartup {
@@ -83,11 +85,6 @@ object Misc: EntryStartup {
                 val value = sp.getString(key, "default")
                 SystemProperties.set("persist.sys.signal.level", value)
                 Log.d("PHH", "Setting signal level method to $value")
-            }
-            MiscSettings.fpsDivisor -> {
-                val value = sp.getString(key, "1")
-                Log.d("PHH", "Setting fps divisor to $value")
-                Settings.Global.putString(c.contentResolver, "fps_divisor", value)
             }
             MiscSettings.cameraTimestampOverride -> {
                 val value = sp.getString(key, "-1")
@@ -204,6 +201,10 @@ object Misc: EntryStartup {
                         || (thisMode.getPhysicalHeight() != lastMode.getPhysicalHeight()))
                 }
             }
+            MiscSettings.dynamicFps -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.dynamic_fps", if (value) "1" else "0")
+            }
             MiscSettings.remotectl -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.remote", if (value) "true" else "false")
@@ -251,11 +252,34 @@ object Misc: EntryStartup {
                 OverlayPicker.setOverlayEnabled("me.phh.treble.overlay.misc.aod_systemui", value)
             }
             MiscSettings.dt2w -> {
-                // Let's try all known dt2w
+                // Asus dt2w
                 val value = sp.getBoolean(key, false)
                 val asusSvc = try { IZenMotion.getService() } catch(e: Exception) { null }
                 if(asusSvc != null) {
                     asusSvc.setDclickEnable(if(value) 1 else 0)
+                }
+
+                // Xiaomi dt2w
+                Misc.safeSetprop("persist.sys.phh.xiaomi.dt2w", if(value) "1" else "0")
+                try {
+                    val binder = android.os.Binder.allowBlocking(
+                        ServiceManager.waitForDeclaredService(ITouchFeature.DESCRIPTOR + "/default"));
+                    val instance = ITouchFeature.Stub.asInterface(binder);
+                    val ret = instance.set_mode_value(0 /*touchid*/, 14 /* TOUCH_DOUBLETAP_MODE */, if(value) 1 else 0)
+                    Log.d("PHH", "Setting xiaomi touch mode returned $ret")
+                } catch(t: Throwable) {
+                    Log.d("PHH", "Setting xiaomi touch mode failed", t)
+                }
+
+                // Agold//unihertz dt2w
+                try {
+                    val binder = android.os.Binder.allowBlocking(
+                        ServiceManager.waitForDeclaredService(IAgoldDaemon.DESCRIPTOR + "/default"));
+                    val instance = IAgoldDaemon.Stub.asInterface(binder);
+                    val ret = instance.SendMessageToIoctl(100, 0, if(value) 1 else 0, if(value) 1 else 0)
+                    Log.d("PHH", "Setting agold touch mode returned $ret")
+                } catch(t: Throwable) {
+                    Log.d("PHH", "Setting agold touch mode failed", t)
                 }
             }
             MiscSettings.fodColor -> {
@@ -299,9 +323,22 @@ object Misc: EntryStartup {
                 // Note: Reversed value because the prop is enabling
                 SystemProperties.set("persist.sys.phh.enable_sf_gl_backpressure", if (value) "0" else "1")
             }
+            MiscSettings.disableSfHwcBackpressure -> {
+                val value = sp.getBoolean(key, false)
+                // Note: Reversed value because the prop is enabling
+                SystemProperties.set("persist.sys.phh.enable_sf_hwc_backpressure", if (value) "0" else "1")
+            }
             MiscSettings.disableSaeUpgrade -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.wifi_disable_sae", if (value) "true" else "false")
+            }
+            MiscSettings.escoTransportUnitSize -> {
+                val value = sp.getString(key, "0")
+                SystemProperties.set("persist.sys.bt.esco_transport_unit_size", value)
+            }
+            MiscSettings.secureAdb -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.phh.adb_secure", if (value) "1" else "0")
             }
         }
     }
@@ -315,7 +352,6 @@ object Misc: EntryStartup {
         this.ctxt = WeakReference(ctxt.applicationContext)
 
         //Refresh parameters on boot
-        spListener.onSharedPreferenceChanged(sp, MiscSettings.fpsDivisor)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.cameraTimestampOverride)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.mobileSignal)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.maxAspectRatioPreO)

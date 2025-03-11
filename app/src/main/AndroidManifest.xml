@@ -24,7 +24,6 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <uses-library android:name="android.hidl.manager.V1_0" android:required="false" />
-        <uses-library android:name="android.hardware.wifi.hostapd.V1_0" android:required="false" />
         <uses-library android:name="vendor.huawei.hardware.biometrics.fingerprint.V2_1" android:required="false"/>
         <uses-library android:name="vendor.huawei.hardware.tp.V1_0" android:required="false"/>
         <uses-library android:name="vendor.qti.hardware.radio.am.V1_0" android:required="false"/>

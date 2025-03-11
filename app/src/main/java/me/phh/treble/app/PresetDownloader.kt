@@ -32,7 +32,7 @@ class PresetDownloader {
         val downloadPresets = object: Runnable {
             override fun run() {
                 try {
-                    Log.e("PHH-Presets", "Downloading...")
+                    Log.i("PHH-Presets", "Downloading...")
                     val ctxt = ctxtWp?.get() ?: return
                     if (alreadyDownloaded) return
 
