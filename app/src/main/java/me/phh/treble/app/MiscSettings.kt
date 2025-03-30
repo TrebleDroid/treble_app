@@ -34,6 +34,7 @@ object MiscSettings : Settings {
     val backlightScale = "key_misc_backlight_scale"
     val headsetDevinput = "key_misc_headset_devinput"
     val restartRil = "key_misc_restart_ril"
+    var patchSmsc = "key_misc_patch_smsc";
     val minimalBrightness = "key_misc_minimal_brightness"
     val aod = "key_misc_aod"
     val dt2w = "key_misc_dt2w"
