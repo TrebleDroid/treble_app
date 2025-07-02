@@ -242,6 +242,10 @@ object Misc: EntryStartup {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.restart_ril", if (value) "true" else "false")
             }
+            MiscSettings.patchSmsc -> {
+                val value = sp.getBoolean(key, true)
+                SystemProperties.set("persist.sys.phh.patch_smsc", if (value) "true" else "false")
+            }
             MiscSettings.minimalBrightness -> {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.overlay.minimal_brightness", if (value) "true" else "false")

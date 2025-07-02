@@ -179,6 +179,11 @@
             android:defaultValue="false"
             android:key="key_misc_restart_ril"
             android:title="Automatically restart RIL" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="key_misc_patch_smsc"
+            android:title="Patch SMSC"
+            android:summary="Turning this option on or off may fix sending SMS messages on certain Samsung devices/carriers" />
         <Preference android:title="@string/remove_telephony_subsystem"
             android:key="key_misc_removetelephony" />
     </PreferenceCategory>
