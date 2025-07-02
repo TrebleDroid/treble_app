@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">TrebleDroidApp</string>
+    <string name="title_activity_settings">Ayarlar</string>
+    <string name="title_activity_top_level">TrebleDroid Ayarları</string>
+    <string name="desc_activity_top_level">Cihaza özel ayarlar</string>
+    <string name="remove_telephony_subsystem">Telefon alt sistemini kaldır</string>
+    <string name="remove_root">Kökü Sil</string>
+    <string name="continue_question">Devam edilsin mi?</string>
+    <string name="title_activity_updater">Güncelleyici</string>
+    <string name="update_not_found_title">Sisteminiz güncel</string>
+    <string name="update_found_title">Sistem güncellemesi kullanılabilir</string>
+    <string name="checking_update_title">Güncellemeler kontrol ediliyor</string>
+    <string name="update_found_button">İndir ve yükle</string>
+    <string name="update_not_found_button">Güncellemeleri kontrol et</string>
+    <string name="error_dialog_title">Hata</string>
+    <string name="dynamic_device_message">Cihazınız OTA güncellemelerini desteklemiyor!</string>
+    <string name="update_error_message">İndirme sırasında hata oluştu!\nLütfen, sonra tekrar deneyin.</string>
+    <string name="success_install_message">Yeni güncelleme başarıyla yüklendi!\nLütfen, şimdi yeniden başlatın.</string>
+    <string name="failed_download_message">Yeni güncelleme indirilemedi.\nDaha fazla bilgi için günlüklere bakın.</string>
+    <string name="failed_install_message">Yeni güncelleme yüklenemedi.\nDaha fazla bilgi için günlüklere bakın.</string>
+    <string name="preparing_update_title">Sistem güncellemesi hazırlanıyor</string>
+    <string name="downloading_update_title">Sistem güncellemesi indiriliyor</string>
+    <string name="applying_update_title">Sistem güncellemesi uygulanıyor</string>
+    <string name="applied_update_title">Güncelleme başarıyla uygulandı</string>
+    <string name="prevent_exit_message">Güncelleme halen devam ediyor. Uygulamayı terk etmek güncellemeyi sonlandıracaktır.\nGerçekten de şimdi çıkmak istiyor musunuz?</string>
+    <string name="warning_dialog_title">Uyarı</string>
+    <string name="magisk_exists_message">Magisk algılandı! Güncellemeye devam ederseniz Magisk'i kaybedebilirsiniz veya kurulum başarısız olabilir!</string>
+    <string name="menu_delete_ota">OTA dosyalarını sil</string>
+    <string name="delete_ota_message">Devam ederseniz kullanıcı verilerinizden olabileceğinizi göz önünde bulundurun!\nBuna engel olmak için, bu diyaloğu iptal edin, yeniden başlatın ve fastboot modundan son güncellemeyi flaşlayın.\nYine de devam etmek istiyor musunuz?</string>
+</resources>
