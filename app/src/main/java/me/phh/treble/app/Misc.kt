@@ -344,6 +344,10 @@ object Misc: EntryStartup {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.sys.phh.adb_secure", if (value) "1" else "0")
             }
+            MiscSettings.disableLeApcfExtended -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.sys.bt.le.disable_apcf_extended_features", if (value) "1" else "0")
+            }
         }
     }
 
