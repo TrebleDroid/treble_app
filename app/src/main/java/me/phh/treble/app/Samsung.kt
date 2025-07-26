@@ -14,6 +14,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import java.io.File
+import android.telephony.SubscriptionManager
 
 class Samsung: EntryStartup {
     /*
@@ -25,6 +26,7 @@ class Samsung: EntryStartup {
         - accesibility: 0 no, 1 negative, 2 color_blind, 3 screen off, 4 grayscale, 5 grayscale_negative, 6 color blind hbm
         - night mode 1 <0-10> (enable and set level) or 0 0 (disable)
      */
+    lateinit var context: Context
     val spListener = SharedPreferences.OnSharedPreferenceChangeListener { sp, key ->
         when(key) {
             SamsungSettings.highBrightess -> {
@@ -100,20 +102,48 @@ class Samsung: EntryStartup {
         }
     }
 
-    val telephonyCallback: TelephonyCallback = @RequiresApi(Build.VERSION_CODES.S)
-    object: TelephonyCallback(), TelephonyCallback.CallStateListener {
-        override fun onCallStateChanged(p0: Int) {
-            Log.d("PHH", "Call state changed $p0")
-            if(p0 == TelephonyManager.CALL_STATE_OFFHOOK) {
-                AudioSystem.setParameters("g_call_state=514") // CALL_STATUS_VOLTE_CP_VOICE_CALL_ON
-            } else {
-                AudioSystem.setParameters("g_call_state=1") // CALL_STATUS_CS_VOICE_CP_VIDEO_CALL_OFF
+@RequiresApi(Build.VERSION_CODES.S)
+val telephonyCallback: TelephonyCallback = object : TelephonyCallback(),
+    TelephonyCallback.CallStateListener,
+    TelephonyCallback.ActiveDataSubscriptionIdListener {
+
+    private var activeSimSlot: Int = 1 // Default SIM slot
+
+    override fun onActiveDataSubscriptionIdChanged(subId: Int) {
+ 
+        val sm = context.getSystemService(SubscriptionManager::class.java)
+        val subscriptionInfoList = sm.activeSubscriptionInfoList
+        for (info in subscriptionInfoList) {
+            if (info.subscriptionId == subId) {
+                activeSimSlot = info.simSlotIndex + 1 // simSlotIndex starts from 0
+                Log.d("PHH", "Detected active SIM slot: $activeSimSlot")
+                break
             }
         }
     }
 
+    override fun onCallStateChanged(state: Int) {
+        Log.d("PHH", "Call state changed $state")
+        try {
+            when (state) {
+                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                    val simSlotHex = "0x%02x".format(activeSimSlot)
+                    AudioSystem.setParameters("g_call_sim_slot=$simSlotHex")
+                    AudioSystem.setParameters("g_call_state=514")
+                }
+                else -> {
+                    AudioSystem.setParameters("g_call_state=1")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("PHH", "Error handling call state", e)
+        }
+    }
+}
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun startup(ctxt: Context) {
+        context = ctxt
         if (!SamsungSettings.enabled()) return
 
         val handler = Handler(HandlerThread("SamsungThread").apply { start()}.looper)
