@@ -221,6 +221,10 @@ object Misc: EntryStartup {
                 val value = sp.getBoolean(key, false)
                 SystemProperties.set("persist.bluetooth.system_audio_hal.enabled", if (value) "true" else "false")
             }
+            MiscSettings.a2dp_offload -> {
+                val value = sp.getBoolean(key, false)
+                SystemProperties.set("persist.bluetooth.enable_bt_offload", if (value) "true" else "false")
+            }
             MiscSettings.noHwcomposer -> {
                 val value = sp.getBoolean(key, false)
                 enableHwcOverlay(!value)
@@ -367,7 +371,16 @@ object Misc: EntryStartup {
         spListener.onSharedPreferenceChanged(sp, MiscSettings.forceCamera2APIHAL3)
         if (! sp.contains(MiscSettings.headsetFix))
             sp.edit().putBoolean(MiscSettings.headsetFix, HuaweiSettings.enabled()).commit()
-        sp.edit().putBoolean(MiscSettings.sysbta, SystemProperties.getBoolean("persist.bluetooth.system_audio_hal.enabled", false)).apply()
+        if (LenovoSettings.bluetooth_fix() && ! sp.contains(MiscSettings.sysbta)) {
+            // Y700 gen4 and first time boot
+            Log.i("PHH", "Applying bluetooth fix")
+            sp.edit().putBoolean(MiscSettings.sysbta, false).apply()
+            sp.edit().putBoolean(MiscSettings.a2dp_offload, true).apply()
+        } else {
+            Log.i("PHH", "Don't apply bluetooth fix")
+            sp.edit().putBoolean(MiscSettings.sysbta, SystemProperties.getBoolean("persist.bluetooth.system_audio_hal.enabled", false)).apply()
+            sp.edit().putBoolean(MiscSettings.a2dp_offload, SystemProperties.getBoolean("persist.bluetooth.enable_bt_offload", false)).apply()
+        }
         spListener.onSharedPreferenceChanged(sp, MiscSettings.headsetFix)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.bluetooth)
         spListener.onSharedPreferenceChanged(sp, MiscSettings.displayFps)

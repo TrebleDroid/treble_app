@@ -10,6 +10,10 @@ object LenovoSettings : Settings {
         return Tools.vendorFp.contains("Lenovo") &&
             (File(Lenovo.dtPanel).exists() || File(Lenovo.dtPanel_Y700_2023).exists())
     }
+
+    fun bluetooth_fix(): Boolean {
+        return Tools.vendorFp.startsWith("Lenovo/TB322FC")
+    }
 }
 
 class LenovoSettingsFragment : SettingsFragment() {

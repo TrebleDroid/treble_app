@@ -146,6 +146,11 @@
             android:defaultValue="true"
             android:key="key_misc_dynamic_sysbta"
             android:title="Use System Wide BT HAL" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="key_misc_a2dp_offload"
+            android:title="Enable A2DP Offload"
+            android:summary="Only effective if System Wide BT HAL is disabled" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/pref_misc_bluetooth"

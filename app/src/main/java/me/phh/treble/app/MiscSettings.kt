@@ -29,6 +29,7 @@ object MiscSettings : Settings {
     val disableFastAudio = "key_misc_disable_fast_audio"
     val cameraTimestampOverride = "key_misc_camera_timestamp"
     val sysbta = "key_misc_dynamic_sysbta"
+    val a2dp_offload = "key_misc_a2dp_offload"
     val noHwcomposer = "key_misc_no_hwcomposer"
     val storageFUSE = "key_misc_storage_fuse"
     val backlightScale = "key_misc_backlight_scale"
