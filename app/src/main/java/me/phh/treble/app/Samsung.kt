@@ -3,11 +3,13 @@ package me.phh.treble.app
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.hardware.display.DisplayManager
 import android.media.AudioSystem
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.SystemProperties
+import android.view.Display
 import android.preference.PreferenceManager
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
@@ -117,6 +119,29 @@ class Samsung: EntryStartup {
         if (!SamsungSettings.enabled()) return
 
         val handler = Handler(HandlerThread("SamsungThread").apply { start()}.looper)
+
+        // Keep the stereo image correct across rotation on tablets with four
+        // CS35L41 speaker amps (Galaxy Tab S6 etc.). Publish the display
+        // rotation so the device's phh-spkrot.sh helper (run by init when
+        // persist.sys.phh.audio_rotation changes) can re-map which amps carry
+        // the left/right channels. The helper no-ops on devices without those
+        // mixer controls, so this is harmless elsewhere.
+        val displayManager = ctxt.getSystemService(DisplayManager::class.java)
+        val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
+        val pushRotation = Runnable {
+            SystemProperties.set(
+                "persist.sys.phh.audio_rotation",
+                defaultDisplay.rotation.toString()
+            )
+        }
+        displayManager.registerDisplayListener(object : DisplayManager.DisplayListener {
+            override fun onDisplayAdded(displayId: Int) {}
+            override fun onDisplayRemoved(displayId: Int) {}
+            override fun onDisplayChanged(displayId: Int) {
+                if (displayId == Display.DEFAULT_DISPLAY) handler.post(pushRotation)
+            }
+        }, handler)
+        handler.post(pushRotation)
 
         val tm = ctxt.getSystemService(TelephonyManager::class.java)
         tm.registerTelephonyCallback({ p0 -> handler.post(p0) }, telephonyCallback)
